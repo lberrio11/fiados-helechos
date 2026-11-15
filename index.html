@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#2f6b3a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Fiados Helechos">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icono-192.png">
+<link rel="apple-touch-icon" href="icono-180.png">
+<title>Fiados · Tienda Los Helechos</title>
+<style>
+  :root{
+    --verde:#2f6b3a; --verde2:#3d8a4b; --verde-claro:#e7f1e8;
+    --rojo:#b3362b; --rojo-claro:#fbeae8; --naranja:#c46a12; --naranja-claro:#fdf0e1;
+    --azul:#2b5d9c; --azul-claro:#e6eef8;
+    --texto:#1d2420; --suave:#5e6b64; --borde:#dfe5e1; --fondo:#f4f6f3; --tarjeta:#fff;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--fondo);color:var(--texto);-webkit-text-size-adjust:100%}
+  header{background:var(--verde);color:#fff;padding:calc(14px + env(safe-area-inset-top)) 16px 12px;display:flex;justify-content:space-between;align-items:flex-end;gap:10px;position:sticky;top:0;z-index:10}
+  header small{opacity:.85;font-size:12px;letter-spacing:.05em;text-transform:uppercase}
+  header h1{margin:2px 0 0;font-size:19px;line-height:1.25;font-weight:650}
+  header .copiar{background:transparent;color:#fff;border-color:rgba(255,255,255,.5)}
+  .red{display:flex;align-items:center;gap:8px;font-size:13px;padding:8px 14px;border-bottom:1px solid var(--borde);background:#fff;cursor:pointer;position:sticky;top:calc(64px + env(safe-area-inset-top));z-index:9}
+  .red i{width:9px;height:9px;border-radius:50%;flex:none;background:var(--verde2)}
+  .red.off i{background:#9aa39e}.red.pend i{background:var(--naranja)}.red.sync i{background:var(--azul);animation:lat 1s infinite}
+  .red b{font-weight:600}.red span{color:var(--suave);margin-left:auto}
+  @keyframes lat{50%{opacity:.3}}
+  main{max-width:560px;margin:0 auto;padding:14px 14px 50px}
+  .tarjeta{background:var(--tarjeta);border:1px solid var(--borde);border-radius:14px;padding:16px;margin-bottom:12px}
+  label{display:block;font-size:14px;font-weight:600;margin:12px 0 6px}
+  input,select,textarea{width:100%;font-size:17px;padding:12px 13px;border:1.5px solid var(--borde);border-radius:10px;background:#fff;color:var(--texto);font-family:inherit}
+  input:focus,select:focus{outline:none;border-color:var(--verde2)}
+  button{font-family:inherit;cursor:pointer}
+  .principal{width:100%;margin-top:16px;font-size:17px;font-weight:600;padding:14px;border:0;border-radius:10px;background:var(--verde);color:#fff}
+  .secundario{width:100%;margin-top:10px;font-size:16px;font-weight:600;padding:12px;border:1.5px solid var(--verde);border-radius:10px;background:#fff;color:var(--verde)}
+  .peligro{border-color:var(--rojo);color:var(--rojo)}
+  .principal:disabled,.secundario:disabled{opacity:.55}
+  .ayuda{font-size:13px;color:var(--suave);margin-top:10px;line-height:1.45}
+  .error{background:var(--rojo-claro);color:var(--rojo);padding:11px 13px;border-radius:9px;font-size:14px;margin-top:12px}
+  .ok{background:var(--verde-claro);color:var(--verde);padding:11px 13px;border-radius:9px;font-size:14px;margin-top:12px}
+  .info{background:var(--azul-claro);color:var(--azul);padding:11px 13px;border-radius:9px;font-size:14px;margin-top:12px}
+  .oculto{display:none!important}
+  h2{font-size:13px;margin:4px 0 10px;color:var(--suave);font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+  .pestanas{display:flex;gap:4px;background:#e2e8e3;border-radius:11px;padding:4px;margin-bottom:12px}
+  .pestanas button{flex:1;border:0;background:none;padding:10px 4px;font-size:14px;font-weight:600;color:var(--suave);border-radius:8px}
+  .pestanas button.activa{background:#fff;color:var(--verde);box-shadow:0 1px 2px rgba(0,0,0,.08)}
+  .cuenta{border-radius:14px;padding:18px 16px;margin-bottom:12px;background:#fff;border:1px solid var(--borde)}
+  .cuenta .etq{font-size:13px;font-weight:700;color:var(--suave);text-transform:uppercase;letter-spacing:.04em}
+  .cuenta .grande{font-size:32px;font-weight:750;margin:2px 0 12px;font-variant-numeric:tabular-nums}
+  .tres{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .tres div{background:var(--fondo);border-radius:10px;padding:9px 10px}
+  .tres small{display:block;font-size:12px;color:var(--suave)}
+  .tres b{font-size:16px;font-variant-numeric:tabular-nums}
+  .barra{height:10px;border-radius:5px;background:#e6ebe7;margin:12px 0 4px;overflow:hidden}
+  .barra i{display:block;height:100%;border-radius:5px}
+  .barra-txt{font-size:12px;color:var(--suave);display:flex;justify-content:space-between}
+  .rojo{color:var(--rojo)} .verde{color:var(--verde2)} .naranja{color:var(--naranja)} .gris{color:var(--suave)}
+  .fiado{border:1px solid var(--borde);border-radius:12px;padding:12px;margin-bottom:10px;background:#fff}
+  .fiado.pend{border-style:dashed;border-color:var(--naranja)}
+  .fiado .cab{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+  .fiado .cab b{font-size:15px}.fiado .cab small{color:var(--suave);font-size:12px}
+  .item{display:flex;justify-content:space-between;gap:10px;font-size:14px;padding:5px 0;border-top:1px dashed var(--borde)}
+  .item:first-of-type{border-top:0}
+  .item span:last-child{white-space:nowrap;font-variant-numeric:tabular-nums}
+  .item .cant{display:inline-block;min-width:34px;color:var(--suave);font-variant-numeric:tabular-nums}
+  .pie-f{display:flex;justify-content:space-between;margin-top:8px;padding-top:8px;border-top:1px solid var(--borde);font-size:14px}
+  .chip{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:20px;letter-spacing:.03em}
+  .chip.PENDIENTE{background:var(--rojo-claro);color:var(--rojo)}
+  .chip.PARCIAL{background:var(--naranja-claro);color:var(--naranja)}
+  .chip.PAGADO{background:var(--verde-claro);color:var(--verde)}
+  .chip.SUBIR{background:var(--naranja-claro);color:var(--naranja);margin-left:4px}
+  .mov{display:flex;gap:10px;padding:10px 0;border-top:1px solid var(--borde);font-size:14px}
+  .mov:first-child{border-top:0}
+  .mov .ic{flex:none;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px}
+  .mov .ic.F{background:var(--rojo-claro);color:var(--rojo)} .mov .ic.A{background:var(--verde-claro);color:var(--verde)}
+  .mov .med{flex:1;min-width:0}
+  .mov .med small{display:block;color:var(--suave);font-size:12px;margin-top:2px}
+  .mov .der{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+  .mov .der small{display:block;color:var(--suave);font-size:12px;margin-top:2px}
+  .vacio{color:var(--suave);font-size:14px;text-align:center;padding:14px 0}
+  .qr{text-align:center;margin:4px 0 12px}.qr img{width:100%;max-width:240px;border:1px solid var(--borde);border-radius:12px;padding:8px;background:#fff}
+  .dato{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 0;border-top:1px solid var(--borde)}
+  .dato b{font-size:13px;word-break:break-all}
+  .copiar{border:1.5px solid var(--borde);background:#fff;color:var(--verde);border-radius:8px;padding:7px 12px;font-weight:600;font-size:14px;flex:none}
+  .chico{padding:4px 10px;font-size:13px;margin-top:6px}
+  .btnwa{display:block;text-align:center;text-decoration:none;margin-top:10px;font-size:16px;font-weight:600;padding:13px;border-radius:10px;background:#25d366;color:#fff;border:0;width:100%}
+  .volver{background:none;border:0;color:var(--verde);font-size:16px;font-weight:600;padding:4px 0 12px}
+  .cartera{background:var(--verde);color:#fff;border-radius:14px;padding:16px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center}
+  .cartera small{display:block;opacity:.85;font-size:12px;text-transform:uppercase;letter-spacing:.05em}
+  .cartera b{font-size:26px}
+  .cartera button{background:#fff;color:var(--verde);border:0;border-radius:10px;padding:11px 14px;font-weight:700;font-size:15px}
+  .cli{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 2px;border-top:1px solid var(--borde);cursor:pointer}
+  .cli:first-child{border-top:0}
+  .cli .izq{min-width:0}.cli .izq b{display:block;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .cli .izq small{color:var(--suave);font-size:12px}
+  .cli .der{text-align:right;white-space:nowrap}.cli .der b{font-size:16px;font-variant-numeric:tabular-nums}.cli .der small{display:block;font-size:11px;color:var(--suave)}
+  .mini{height:4px;border-radius:2px;background:#e6ebe7;margin-top:4px;width:90px;margin-left:auto;overflow:hidden}.mini i{display:block;height:100%}
+  .acciones{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+  .acciones button{border:0;border-radius:12px;padding:16px 8px;font-size:18px;font-weight:700;color:#fff}
+  .bFiar{background:var(--rojo)}.bAbonar{background:var(--verde2)}.bFiar:disabled{background:#c9a4a0}
+  .fila-item{border:1px solid var(--borde);border-radius:12px;padding:10px;margin-bottom:10px;background:#fff;position:relative}
+  .fila-item .dos{display:grid;grid-template-columns:90px 1fr;gap:2px 8px;margin-top:8px;font-size:12px}
+  .fila-item .sub{display:flex;justify-content:space-between;align-items:center;margin-top:8px;font-size:14px;color:var(--suave)}
+  .fila-item .quitar{background:none;border:0;color:var(--rojo);font-size:14px;font-weight:600}
+  .sug{position:absolute;left:10px;right:10px;z-index:5;background:#fff;border:1.5px solid var(--verde2);border-radius:10px;box-shadow:0 6px 16px rgba(0,0,0,.12);overflow:hidden}
+  .sug div{padding:11px 12px;border-top:1px solid var(--borde);display:flex;justify-content:space-between;gap:8px;font-size:15px}
+  .sug div:first-child{border-top:0}.sug div small{color:var(--suave)}
+  .total-f{display:flex;justify-content:space-between;align-items:center;font-size:18px;padding:14px 4px}
+  .total-f b{font-size:26px}
+  .rapidos{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+  .rapidos button{border:1.5px solid var(--borde);background:#fff;border-radius:20px;padding:7px 12px;font-size:14px;font-weight:600;color:var(--verde)}
+  .velo{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;justify-content:center;z-index:20}
+  .modal{background:#fff;width:100%;max-width:560px;border-radius:18px 18px 0 0;padding:20px 16px calc(26px + env(safe-area-inset-bottom));max-height:90vh;overflow:auto}
+  .modal h3{margin:0 0 8px;font-size:18px}
+  .prod{display:flex;justify-content:space-between;gap:10px;padding:11px 2px;border-top:1px solid var(--borde);cursor:pointer;font-size:15px}
+  .prod:first-child{border-top:0}.prod small{color:var(--suave);font-size:12px}
+  .rep{display:flex;justify-content:space-between;padding:8px 0;border-top:1px solid var(--borde);font-size:14px}
+  .rep:first-child{border-top:0}
+  .resumen-mes{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0}
+  .resumen-mes div{background:var(--fondo);border-radius:10px;padding:10px}
+  .resumen-mes small{display:block;color:var(--suave);font-size:12px}.resumen-mes b{font-size:17px}
+  .interruptor{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:8px 0}
+  .interruptor input{width:auto;transform:scale(1.4)}
+  .pendop{border-top:1px solid var(--borde);padding:10px 0;font-size:14px}
+  .pendop:first-child{border-top:0}
+  .pendop small{display:block;color:var(--suave)}
+</style>
+</head>
+<body>
+<header><div><small>Fiados · panel del tendero</small><h1>Tienda Los Helechos</h1></div><button class="copiar oculto" id="bCerrar">Salir</button></header>
+<div class="red oculto" id="red"><i></i><b id="redTxt">—</b><span id="redSub"></span></div>
+<main>
+  <!-- PIN -->
+  <section id="vPin" class="tarjeta">
+    <form id="fPin">
+      <label for="pin">PIN de la tienda</label>
+      <input id="pin" type="password" inputmode="numeric" maxlength="8" autocomplete="off">
+      <button class="principal" id="bPin">Entrar</button>
+      <div id="ePin" class="error oculto"></div>
+      <p class="ayuda">La primera vez necesitas internet para bajar los datos. Después la app funciona sin conexión y sube los cambios sola cuando vuelve el internet.</p>
+    </form>
+  </section>
+
+  <section id="vMain" class="oculto">
+    <div id="avisoInstalar" class="info oculto" style="margin:0 0 12px">Instala la app en este celular para abrirla sin internet. <button class="copiar chico" id="bInstalar">Instalar</button></div>
+    <div class="pestanas" id="tabs">
+      <button data-t="tClientes" class="activa">Clientes</button>
+      <button data-t="tProductos">Productos</button>
+      <button data-t="tMas">Más</button>
+    </div>
+    <div id="tClientes">
+      <div class="cartera"><div><small>Total por cobrar</small><b id="cartera">$0</b></div><button id="bNuevo">+ Cliente</button></div>
+      <input id="qCli" placeholder="Buscar por nombre, cédula o celular" autocomplete="off">
+      <div class="tarjeta" style="margin-top:10px"><h2 id="tDeben">Deben</h2><div id="lDeben"></div></div>
+      <div class="tarjeta"><h2 id="tAlDia">Al día</h2><div id="lAlDia"></div></div>
+    </div>
+    <div id="tProductos" class="oculto">
+      <div class="tarjeta">
+        <p class="ayuda" style="margin-top:0">Esta lista se llena sola con lo que vas fiando y sirve para autocompletar. Toca un producto para corregir el nombre o el precio, o para unir duplicados.</p>
+        <input id="qProd" placeholder="Buscar producto" autocomplete="off">
+        <button class="secundario" id="bNuevoProd">+ Agregar producto a la lista</button>
+      </div>
+      <div class="tarjeta"><h2 id="tProd">Productos</h2><div id="lProd"></div></div>
+    </div>
+    <div id="tMas" class="oculto">
+      <div class="tarjeta">
+        <h2>Sincronización</h2>
+        <div id="sincInfo" class="ayuda" style="margin-top:0"></div>
+        <div id="lPend"></div>
+        <button class="principal" id="bSync">Sincronizar ahora</button>
+        <div id="eSync" class="error oculto"></div>
+      </div>
+      <div class="tarjeta">
+        <h2>Reporte del mes</h2>
+        <select id="selMes"></select>
+        <div id="rep"></div>
+      </div>
+      <div class="tarjeta">
+        <h2>Copia de seguridad</h2>
+        <p class="ayuda" style="margin-top:0">Todos los datos ya están guardados en este celular y en Google Drive. Aquí puedes bajar además un Excel con todo (necesita internet); también queda guardado en Drive, en la carpeta <b>Respaldos</b>.</p>
+        <button class="principal" id="bRespaldo">Descargar copia en Excel</button>
+        <div class="interruptor"><span>Copia automática todas las noches en Drive</span><input type="checkbox" id="chkDiario"></div>
+        <div class="ayuda" id="ultResp"></div>
+        <div id="eResp" class="error oculto"></div><div id="oResp" class="ok oculto"></div>
+      </div>
+      <div class="tarjeta">
+        <h2>Enlace para los clientes</h2>
+        <p class="ayuda" style="margin-top:0">Compártelo para que cada cliente consulte su cuenta con su cédula y los 4 últimos dígitos del celular. Ellos ven lo que ya está sincronizado.</p>
+        <div class="dato"><b id="urlApp"></b></div>
+        <button class="secundario" id="bUrl">Compartir enlace</button>
+      </div>
+      <div class="tarjeta">
+        <h2>Cuenta para pagos (lo ven los clientes)</h2>
+        <div id="pagoOff" class="info">Necesita internet.</div>
+        <div id="pagoForm" class="oculto">
+          <label>Imagen del QR Bre-B</label>
+          <div id="qrVista" class="qr"></div>
+          <input type="file" id="qrFile" accept="image/*">
+          <label class="interruptor oculto" id="lQuitarQr" style="font-weight:normal"><span>Quitar el QR actual</span><input type="checkbox" id="quitarQr"></label>
+          <label for="pLlave">Llave Bre-B</label><input id="pLlave" autocomplete="off">
+          <label for="pTitular">Titular</label><input id="pTitular" autocomplete="off">
+          <label for="pBanco">Banco</label><input id="pBanco" autocomplete="off">
+          <label for="pTipo">Tipo de cuenta</label><input id="pTipo" autocomplete="off" placeholder="Ahorros / Corriente">
+          <label for="pNumero">Número de cuenta</label><input id="pNumero" inputmode="numeric" autocomplete="off">
+          <label for="pCelular">Celular de la tienda (WhatsApp para comprobantes)</label><input id="pCelular" inputmode="numeric" maxlength="10" autocomplete="off">
+          <label for="pNota">Nota para los clientes</label><input id="pNota" autocomplete="off">
+          <button class="principal" id="bPago">Guardar datos de pago</button>
+        </div>
+        <div id="ePago" class="error oculto"></div><div id="oPago" class="ok oculto"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="vFicha" class="oculto">
+    <button class="volver" onclick="irInicio()">‹ Clientes</button>
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:10px">
+      <div style="min-width:0"><b id="fNombre" style="font-size:18px"></b><div class="ayuda" style="margin:2px 0 0" id="fDatos"></div></div>
+      <button class="copiar" id="bEditar">Editar</button>
+    </div>
+    <div id="fCuenta"></div>
+    <div class="acciones"><button class="bFiar" id="bFiar">+ Fiado</button><button class="bAbonar" id="bAbonar">+ Abono</button></div>
+    <div class="pestanas" id="tabsF">
+      <button data-f="fDebe" class="activa">Lo que debe</button>
+      <button data-f="fMovs">Movimientos</button>
+    </div>
+    <div id="fDebe"></div>
+    <div id="fMovs" class="oculto"><div class="tarjeta" id="fMovsL"></div><div id="fPagados"></div></div>
+    <button class="secundario" id="bEstado">Enviar estado de cuenta (PDF)</button>
+    <a class="btnwa" id="aWaCli" target="_blank" rel="noopener">Recordar saldo por WhatsApp</a>
+    <div id="eFicha" class="error oculto"></div><div id="oFicha" class="ok oculto"></div>
+  </section>
+
+  <section id="vCliente" class="oculto">
+    <button class="volver" id="bVolverCli">‹ Volver</button>
+    <div class="tarjeta">
+      <h2 id="tCliForm">Nuevo cliente</h2>
+      <form id="fCli">
+        <label for="cNombre">Nombre completo</label><input id="cNombre" autocomplete="off">
+        <label for="cCedula">Cédula</label><input id="cCedula" inputmode="numeric" autocomplete="off">
+        <label for="cCelular">Celular (10 dígitos)</label><input id="cCelular" inputmode="numeric" maxlength="10" autocomplete="off">
+        <label for="cCupo">Cupo máximo de fiado</label><input id="cCupo" inputmode="numeric" class="plata" autocomplete="off" placeholder="$0">
+        <div class="rapidos" id="cupoRap"></div>
+        <label for="cDir">Dirección (opcional)</label><input id="cDir" autocomplete="off">
+        <div id="cEstadoBox" class="oculto">
+          <label for="cEstado">Estado</label>
+          <select id="cEstado"><option value="ACTIVO">ACTIVO – puede fiar</option><option value="BLOQUEADO">BLOQUEADO – no puede fiar, sí abonar</option><option value="RETIRADO">RETIRADO</option></select>
+        </div>
+        <label for="cObs">Observación (opcional)</label><input id="cObs" autocomplete="off">
+        <button class="principal" id="bGuardarCli">Guardar cliente</button>
+        <div id="eCli" class="error oculto"></div>
+      </form>
+    </div>
+  </section>
+
+  <section id="vFiado" class="oculto">
+    <button class="volver" onclick="irFicha()">‹ Cancelar</button>
+    <div class="tarjeta" style="padding:12px 14px"><b id="fiaNombre"></b><div class="ayuda" style="margin:2px 0 0" id="fiaInfo"></div></div>
+    <div id="items"></div>
+    <button class="secundario" id="bOtro" style="margin-top:0">+ Agregar otro producto</button>
+    <div class="total-f"><span>Total del fiado</span><b id="fiaTotal">$0</b></div>
+    <div id="fiaAviso" class="error oculto"></div>
+    <div class="tarjeta">
+      <label for="fiaFecha" style="margin-top:0">Fecha</label><input type="date" id="fiaFecha">
+      <label for="fiaNota">Nota (opcional)</label><input id="fiaNota" autocomplete="off" placeholder="Ej. lo recogió la hija">
+    </div>
+    <button class="principal" id="bGuardarFiado">Guardar fiado</button>
+    <div id="eFiado" class="error oculto"></div>
+  </section>
+
+  <section id="vAbono" class="oculto">
+    <button class="volver" onclick="irFicha()">‹ Cancelar</button>
+    <div class="tarjeta">
+      <b id="abNombre"></b><div class="ayuda" style="margin:2px 0 0" id="abInfo"></div>
+      <label for="abValor">Valor del abono</label><input id="abValor" inputmode="numeric" class="plata" autocomplete="off" placeholder="$0">
+      <div class="rapidos" id="abRap"></div>
+      <label for="abForma">Forma de pago</label><select id="abForma"></select>
+      <label for="abFecha">Fecha</label><input type="date" id="abFecha">
+      <label for="abNota">Nota (opcional)</label><input id="abNota" autocomplete="off">
+      <button class="principal" id="bGuardarAbono" style="background:var(--verde2)">Guardar abono</button>
+      <div id="eAbono" class="error oculto"></div>
+    </div>
+  </section>
+
+  <section id="vListo" class="oculto">
+    <div class="tarjeta" style="text-align:center">
+      <div style="font-size:40px;color:var(--verde2)">✓</div>
+      <b id="lTitulo" style="font-size:18px"></b>
+      <div class="ayuda" id="lSub"></div>
+    </div>
+    <div id="lCuenta"></div>
+    <button class="principal" id="bCompPdf">Enviar comprobante PDF por WhatsApp</button>
+    <a class="btnwa" id="aWaListo" target="_blank" rel="noopener" style="background:#fff;color:#128c4a;border:1.5px solid #25d366">Avisar con mensaje de WhatsApp</a>
+    <div id="nListo" class="ok oculto"></div>
+    <button class="secundario" onclick="irFicha()">Volver al cliente</button>
+    <button class="secundario" onclick="irInicio()" style="border-color:var(--borde);color:var(--suave)">Ir a la lista de clientes</button>
+  </section>
+</main>
+<div id="velo" class="velo oculto"><div class="modal" id="modal"></div></div>
+
+<script>
+/* ===================== Configuración ===================== */
+const API_GOOGLE = 'https:\/\/script.google.com/macros/s/AKfycby2G2Sh2Y1W96DF0Zh5rPROWh-ORbmy1NkIMnvAuaOTYzWHd0qV9xGu10I85-kJHSga/exec';
+const API = (/^(localhost|127\.0\.0\.1)$/.test(location.hostname) && new URLSearchParams(location.search).get('api')) || API_GOOGLE;
+const CLAVE = 'fh_datos_v1';
+const FORMAS_BASE = ['Efectivo', 'Bre-B', 'Transferencia', 'Nequi', 'Daviplata', 'Otro'];
+
+/* ===================== Utilidades ===================== */
+const $ = id => document.getElementById(id);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const cop = n => { const r = Math.round(n || 0); return (r < 0 ? '-$' : '$') + Math.abs(r).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.'); };
+const cant = n => String(Math.round(n * 1000) / 1000).replace('.', ',');
+const show = (id, on) => $(id).classList.toggle('oculto', !on);
+function err(id, msg) { $(id).textContent = msg || ''; show(id, !!msg); }
+const isoDe = d => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+const hoyISO = () => isoDe(new Date());
+const txtFecha = iso => { const m = String(iso || '').match(/^(\d{4})-(\d{2})-(\d{2})/); return m ? m[3] + '/' + m[2] + '/' + m[1] : ''; };
+const normal = s => String(s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toUpperCase().replace(/[^A-Z0-9 ]/g, ' ').replace(/\s+/g, ' ').trim();
+const plata = s => Number(String(s || '').replace(/\D/g, '')) || 0;
+const cantNum = s => Number(String(s || '').replace(',', '.').replace(/[^\d.]/g, '')) || 0;
+const dig = s => String(s == null ? '' : s).replace(/\D/g, '');
+const limpio = s => String(s == null ? '' : s).replace(/\s+/g, ' ').trim().slice(0, 200);
+const nombreProd = s => { s = limpio(s).slice(0, 80); return s ? s.charAt(0).toUpperCase() + s.slice(1) : ''; };
+const nF = n => 'F-' + ('0000' + n).slice(-5), nA = n => 'A-' + ('0000' + n).slice(-5);
+const nuevoId = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
+const MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+const nomMes = k => { const [y, m] = k.split('-'); const t = (MESES[Number(m) - 1] || k) + ' ' + y; return t.charAt(0).toUpperCase() + t.slice(1); };
+async function hash(s) { const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode('helechos:' + s)); return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, '0')).join(''); }
+
+/* ===================== Datos guardados en el celular =====================
+   S.snap  = última copia bajada de Drive
+   S.ops   = registros hechos en el celular que faltan por subir (en orden)
+   La pantalla siempre muestra: copia de Drive + pendientes aplicados encima. */
+let S = { snap: null, ops: [], pin: '', pinHash: '', ultima: 0 };
+function cargar() { try { const x = JSON.parse(localStorage.getItem(CLAVE) || 'null'); if (x) S = Object.assign(S, x); } catch (e) {} }
+function guardar() { try { localStorage.setItem(CLAVE, JSON.stringify(S)); } catch (e) { alerta('No se pudo guardar en el celular: ' + e.message); } }
+cargar();
+if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {});
+
+let V = null;   /* vista calculada */
+function calcular() {
+  const s = S.snap || { clientes: [], fiados: [], abonos: [], productos: [], formas: FORMAS_BASE };
+  const v = {
+    clientes: s.clientes.map(c => Object.assign({}, c)),
+    fiados: s.fiados.map(f => Object.assign({ key: 'f' + f.numero, num: nF(f.numero) }, f)),
+    abonos: s.abonos.map(a => Object.assign({ key: 'a' + a.numero, num: nA(a.numero) }, a)),
+    productos: s.productos.map(p => Object.assign({}, p))
+  };
+  const prod = (nombre, precio, uso) => {
+    const k = normal(nombre), p = v.productos.find(x => normal(x.n) === k);
+    if (p) { if (precio) p.p = precio; p.u += uso; } else v.productos.push({ n: nombre, p: precio, u: uso });
+  };
+  S.ops.forEach(op => {
+    const d = op.datos || {};
+    if (op.tipo === 'cliente') {
+      if (!d.codigo) v.clientes.push({ codigo: 'N-' + op.id, cedula: dig(d.cedula), nombre: limpio(d.nombre).toUpperCase(), celular: dig(d.celular), direccion: d.direccion || '',
+        estado: d.estado || 'ACTIVO', cupo: d.cupo, ingreso: isoDe(new Date(op.creado)), observacion: d.observacion || '', pend: op.id, err: op.error });
+      else { const c = v.clientes.find(x => x.codigo === d.codigo); if (c) Object.assign(c, { cedula: dig(d.cedula), nombre: limpio(d.nombre).toUpperCase(), celular: dig(d.celular), direccion: d.direccion || '', estado: d.estado, cupo: d.cupo, observacion: d.observacion || '', pendEdit: op.id }); }
+    } else if (op.tipo === 'fiado') {
+      const items = d.items.map(i => ({ producto: nombreProd(i.producto), cantidad: i.cantidad, valor: i.valor, subtotal: Math.round(i.cantidad * i.valor) }));
+      v.fiados.push({ key: 'p' + op.id, pend: op.id, err: op.error, numero: 0, num: 'por subir', fecha: d.fecha, reg: op.creado, codigo: d.codigo, total: items.reduce((t, i) => t + i.subtotal, 0), nota: d.nota || '', items });
+      items.forEach(i => prod(i.producto, i.valor, 1));
+    } else if (op.tipo === 'abono') {
+      v.abonos.push({ key: 'p' + op.id, pend: op.id, err: op.error, numero: 0, num: 'por subir', fecha: d.fecha, reg: op.creado, codigo: d.codigo, valor: d.valor, forma: d.forma, nota: d.nota || '' });
+    } else if (op.tipo === 'anular') {
+      const l = d.tipo === 'abono' ? v.abonos : v.fiados, i = l.findIndex(x => x.numero === d.numero);
+      if (i >= 0) l.splice(i, 1);
+    } else if (op.tipo === 'producto') {
+      const kv = normal(d.viejo), kn = normal(d.nuevo);
+      const a = v.productos.find(x => normal(x.n) === kv), b = v.productos.find(x => normal(x.n) === kn && x !== a);
+      if (!a) v.productos.push({ n: nombreProd(d.nuevo), p: d.precio, u: 0 });
+      else if (b) { b.u += a.u; if (d.precio) b.p = d.precio; v.productos.splice(v.productos.indexOf(a), 1); }
+      else { a.n = nombreProd(d.nuevo); if (d.precio) a.p = d.precio; }
+    } else if (op.tipo === 'borrarProducto') {
+      v.productos = v.productos.filter(x => normal(x.n) !== normal(d.nombre));
+    }
+  });
+  v.productos.sort((a, b) => b.u - a.u || a.n.localeCompare(b.n));
+  V = v;
+  return v;
+}
+
+/* Igual que en el servidor: los abonos pagan primero los fiados más antiguos */
+const orden = (a, b) => (a.fecha < b.fecha ? -1 : a.fecha > b.fecha ? 1 : 0) || ((a.reg || 0) - (b.reg || 0)) || ((a.numero || 9e9) - (b.numero || 9e9));
+function estado(c) {
+  const fs = V.fiados.filter(f => f.codigo === c.codigo).sort(orden), as = V.abonos.filter(a => a.codigo === c.codigo).sort(orden);
+  const totF = fs.reduce((s, f) => s + f.total, 0), totA = as.reduce((s, a) => s + a.valor, 0);
+  let bolsa = totA;
+  const fiados = fs.map(f => {
+    const pagado = Math.min(f.total, bolsa); bolsa -= pagado;
+    return Object.assign({}, f, { fechaTxt: txtFecha(f.fecha), pagado, falta: f.total - pagado, estado: pagado >= f.total ? 'PAGADO' : pagado > 0 ? 'PARCIAL' : 'PENDIENTE' });
+  });
+  let saldo = 0;
+  const movs = fs.map(f => Object.assign({ tipo: 'F' }, f)).concat(as.map(a => Object.assign({ tipo: 'A' }, a))).sort(orden).map(m => {
+    saldo += m.tipo === 'F' ? m.total : -m.valor;
+    return { tipo: m.tipo, key: m.key, numero: m.numero, num: m.num, pend: m.pend, err: m.err, fechaTxt: txtFecha(m.fecha), valor: m.tipo === 'F' ? m.total : m.valor, saldo,
+      detalle: m.tipo === 'F' ? m.items.map(i => cant(i.cantidad) + ' ' + i.producto).join(', ') + (m.nota ? ' · ' + m.nota : '') : 'Abono · ' + m.forma + (m.nota ? ' · ' + m.nota : '') };
+  });
+  const s = totF - totA;
+  return Object.assign({}, c, { saldo: s, disponible: Math.max(0, c.cupo - Math.max(0, s)), pendientes: fiados.filter(f => f.falta > 0), pagados: fiados.filter(f => f.falta <= 0).reverse(),
+    movimientos: movs, wa: dig(c.celular).length === 10 ? '57' + dig(c.celular) : '', tienePend: fs.some(f => f.pend) || as.some(a => a.pend) || !!c.pend });
+}
+
+/* ===================== Conexión con Google Drive ===================== */
+async function api(cuerpo, ms) {
+  const ctl = new AbortController(), t = setTimeout(() => ctl.abort(), ms || 45000);
+  try {
+    const r = await fetch(API, { method: 'POST', body: JSON.stringify(Object.assign({ pin: S.pin }, cuerpo)), signal: ctl.signal, redirect: 'follow' });
+    if (!r.ok) throw new Error('El servidor respondió ' + r.status);
+    return await r.json();
+  } finally { clearTimeout(t); }
+}
+
+let sincronizando = false, enLinea = navigator.onLine, ultimoError = '';
+async function sincronizar(manual) {
+  if (sincronizando || !S.pin) return;
+  sincronizando = true; pintarRed();
+  try {
+    const lote = S.ops.filter(o => manual || !o.error);
+    if (lote.length) {
+      const r = await api({ accion: 'sincronizar', ops: lote.map(o => ({ id: o.id, tipo: o.tipo, creado: o.creado, sinConexion: o.sinConexion, datos: o.datos })) });
+      if (r.pinMalo) throw Object.assign(new Error(r.error), { pin: true });
+      if (r.error) throw new Error(r.error);
+      (r.resultados || []).forEach(x => {
+        const op = S.ops.find(o => o.id === x.id); if (!op) return;
+        if (x.ok) {
+          S.ops = S.ops.filter(o => o !== op);
+          if (op.tipo === 'cliente' && !op.datos.codigo && x.codigo) S.ops.forEach(o => { if (o.datos && o.datos.codigo === 'N-' + op.id) o.datos.codigo = x.codigo; });
+          if (ficha && ficha.codigo === 'N-' + op.id && x.codigo) ficha.codigo = x.codigo;
+        } else op.error = x.error;
+      });
+      guardar();
+    }
+    const s = await api({ accion: 'descargar' });
+    if (s.pinMalo) throw Object.assign(new Error(s.error), { pin: true });
+    if (!s.ok) throw new Error(s.error || 'No se pudieron bajar los datos.');
+    S.snap = s; S.ultima = Date.now(); enLinea = true; ultimoError = '';
+    guardar();
+  } catch (e) {
+    if (e.pin) { ultimoError = e.message; alerta('No se pudo sincronizar: ' + e.message + ' Si cambiaste el PIN en la hoja, sal y vuelve a entrar.'); }
+    else { enLinea = false; ultimoError = manual ? 'Sin conexión con Google. Los datos siguen guardados en el celular.' : ''; }
+  } finally {
+    sincronizando = false; refrescar();
+  }
+}
+setInterval(() => { if (S.pin && (S.ops.some(o => !o.error) || Date.now() - S.ultima > 5 * 60000)) sincronizar(false); }, 60000);
+window.addEventListener('online', () => sincronizar(false));
+window.addEventListener('offline', () => { enLinea = false; pintarRed(); });
+document.addEventListener('visibilitychange', () => { if (!document.hidden && S.pin) sincronizar(false); });
+
+function hace(ts) {
+  if (!ts) return 'nunca';
+  const m = Math.round((Date.now() - ts) / 60000);
+  if (m < 1) return 'hace un momento'; if (m < 60) return 'hace ' + m + ' min';
+  const h = Math.round(m / 60); if (h < 24) return 'hace ' + h + ' h';
+  return 'el ' + txtFecha(isoDe(new Date(ts)));
+}
+function pintarRed() {
+  if (!S.pin) return;
+  const n = S.ops.length, malos = S.ops.filter(o => o.error).length, r = $('red');
+  show('red', true);
+  r.className = 'red' + (sincronizando ? ' sync' : n ? ' pend' : !enLinea ? ' off' : '');
+  $('redTxt').textContent = sincronizando ? 'Sincronizando…' : n ? n + (n === 1 ? ' registro por subir' : ' registros por subir') + (malos ? ' (' + malos + ' con error)' : '') : enLinea ? 'Todo sincronizado' : 'Sin conexión';
+  $('redSub').textContent = sincronizando ? '' : (!enLinea ? 'sin internet · ' : '') + 'última ' + hace(S.ultima);
+}
+$('red').onclick = () => sincronizar(true);
+
+/* ===================== Pantallas ===================== */
+const VISTAS = ['vPin', 'vMain', 'vFicha', 'vCliente', 'vFiado', 'vAbono', 'vListo'];
+let vistaActual = 'vPin';
+function ir(v) { vistaActual = v; VISTAS.forEach(x => show(x, x === v)); window.scrollTo(0, 0); }
+function modal(html) { $('modal').innerHTML = html; show('velo', true); }
+function cerrarModal() { show('velo', false); $('modal').innerHTML = ''; }
+$('velo').onclick = e => { if (e.target.id === 'velo') cerrarModal(); };
+function alerta(m) { modal(`<h3>Aviso</h3><p>${esc(m)}</p><button class="principal" onclick="cerrarModal()">Entendido</button>`); }
+document.addEventListener('input', e => {
+  if (!e.target.classList.contains('plata')) return;
+  const n = plata(e.target.value); e.target.value = n ? cop(n) : '';
+});
+
+function refrescar() {
+  calcular(); pintarRed();
+  if (!S.snap) return;
+  $('abForma').innerHTML = (S.snap.formas || FORMAS_BASE).map(f => `<option>${esc(f)}</option>`).join('');
+  pintarClientes(); pintarProductos(); pintarSinc();
+  if (vistaActual === 'vFicha' && ficha) { const c = V.clientes.find(x => x.codigo === ficha.codigo); if (c) { ficha = estado(c); pintarFicha(); } }
+  if (!$('tMas').classList.contains('oculto')) pintarMas();
+}
+
+function agregarOp(tipo, datos) {
+  const op = { id: nuevoId(), tipo, creado: Date.now(), sinConexion: !enLinea, datos };
+  S.ops.push(op); guardar(); calcular(); pintarRed();
+  setTimeout(() => sincronizar(false), 300);
+  return op;
+}
+
+/* ---------- Entrar ---------- */
+$('fPin').onsubmit = async e => {
+  e.preventDefault(); err('ePin', '');
+  const pin = dig($('pin').value), h = await hash(pin);
+  if (pin.length < 4) return err('ePin', 'Escribe el PIN (4 a 8 números).');
+  if (S.snap && S.pinHash) {   /* ya hay datos en el celular: se puede entrar sin internet */
+    if (h !== S.pinHash) return err('ePin', 'PIN incorrecto.');
+    S.pin = pin; guardar(); entrar(); sincronizar(false); return;
+  }
+  const b = $('bPin'); b.disabled = true; b.textContent = 'Bajando datos…';
+  try {
+    S.pin = pin;
+    const s = await api({ accion: 'descargar' });
+    if (!s.ok) { S.pin = ''; return err('ePin', s.error || 'No se pudo entrar.'); }
+    S.snap = s; S.pinHash = h; S.ultima = Date.now(); enLinea = true; guardar(); entrar();
+  } catch (x) { S.pin = ''; err('ePin', 'Se necesita internet la primera vez para bajar los datos. Intenta de nuevo con conexión.'); }
+  finally { b.disabled = false; b.textContent = 'Entrar'; }
+};
+function entrar() { show('bCerrar', true); ir('vMain'); refrescar(); }
+$('bCerrar').onclick = () => {
+  const n = S.ops.length;
+  modal(`<h3>Salir</h3><p class="ayuda">${n ? '<b class="rojo">Hay ' + n + ' registro(s) sin subir.</b> Si sales se conservan en el celular y se subirán cuando vuelvas a entrar.' : 'Los datos quedan guardados en el celular.'} Para entrar de nuevo se pide el PIN.</p>
+    <button class="principal" onclick="salir()">Salir</button><button class="secundario" onclick="cerrarModal()">Cancelar</button>`);
+};
+function salir() { S.pin = ''; guardar(); location.reload(); }
+
+/* ---------- Instalar ---------- */
+let pedirInstalar = null;
+window.addEventListener('beforeinstallprompt', e => { e.preventDefault(); pedirInstalar = e; show('avisoInstalar', true); });
+$('bInstalar').onclick = async () => { if (!pedirInstalar) return; pedirInstalar.prompt(); await pedirInstalar.userChoice; pedirInstalar = null; show('avisoInstalar', false); };
+if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')) navigator.serviceWorker.register('sw.js').catch(() => {});
+
+/* ---------- Pestañas ---------- */
+document.querySelectorAll('#tabs button').forEach(b => b.onclick = () => {
+  document.querySelectorAll('#tabs button').forEach(x => x.classList.toggle('activa', x === b));
+  ['tClientes', 'tProductos', 'tMas'].forEach(t => show(t, t === b.dataset.t));
+  if (b.dataset.t === 'tMas') pintarMas();
+});
+document.querySelectorAll('#tabsF button').forEach(b => b.onclick = () => {
+  document.querySelectorAll('#tabsF button').forEach(x => x.classList.toggle('activa', x === b));
+  ['fDebe', 'fMovs'].forEach(t => show(t, t === b.dataset.f));
+});
+
+/* ---------- Tarjetas ---------- */
+function colorUso(saldo, cupo) {
+  if (saldo <= 0) return 'var(--verde2)';
+  if (!cupo || saldo >= cupo) return 'var(--rojo)';
+  return saldo / cupo >= 0.7 ? 'var(--naranja)' : 'var(--verde2)';
+}
+function htmlCuenta(c) {
+  const favor = c.saldo < 0, uso = c.cupo > 0 ? Math.min(100, Math.max(0, c.saldo) / c.cupo * 100) : (c.saldo > 0 ? 100 : 0), col = colorUso(c.saldo, c.cupo);
+  let h = `<div class="cuenta"><div class="etq">${favor ? 'Saldo a favor' : c.saldo > 0 ? 'Debe' : 'Está al día'}</div>
+    <div class="grande" style="color:${favor || c.saldo <= 0 ? 'var(--verde2)' : 'var(--texto)'}">${cop(Math.abs(c.saldo))}</div>
+    <div class="tres"><div><small>Cupo máximo</small><b>${cop(c.cupo)}</b></div><div><small>Disponible para fiar</small><b style="color:${c.disponible > 0 ? 'var(--verde2)' : 'var(--rojo)'}">${cop(c.disponible)}</b></div></div>`;
+  if (c.cupo > 0) h += `<div class="barra"><i style="width:${uso}%;background:${col}"></i></div><div class="barra-txt"><span>Usado ${Math.round(uso)} %</span><span>Cupo ${cop(c.cupo)}</span></div>`;
+  if (c.estado && c.estado !== 'ACTIVO') h += `<div class="error">Cuenta ${esc(c.estado.toLowerCase())}: no se puede fiar más por ahora.</div>`;
+  return h + '</div>';
+}
+function chipSubir(x) { return x.pend ? `<span class="chip SUBIR">${x.err ? '⚠ ERROR AL SUBIR' : '⏳ POR SUBIR'}</span>` : ''; }
+function htmlFiado(f) {
+  const items = f.items.map(i => `<div class="item"><span><span class="cant">${cant(i.cantidad)}×</span> ${esc(i.producto)}${i.cantidad !== 1 ? ` <small class="gris">(${cop(i.valor)} c/u)</small>` : ''}</span><span>${cop(i.subtotal)}</span></div>`).join('');
+  let pie = `<div class="pie-f"><span>Total ${cop(f.total)}</span><b class="${f.falta > 0 ? 'rojo' : 'verde'}">${f.falta > 0 ? 'Debe ' + cop(f.falta) : 'Pagado'}</b></div>`;
+  if (f.estado === 'PARCIAL') pie = `<div class="pie-f"><span>Total ${cop(f.total)} · abonado ${cop(f.pagado)}</span><b class="naranja">Falta ${cop(f.falta)}</b></div>`;
+  return `<div class="fiado${f.pend ? ' pend' : ''}"><div class="cab"><div><b>${esc(f.fechaTxt)}</b> <small>${esc(f.num)}</small></div><div><span class="chip ${f.estado}">${f.estado}</span>${chipSubir(f)}</div></div>
+    ${f.err ? `<div class="error" style="margin:6px 0">${esc(f.err)}</div>` : ''}${f.nota ? `<div class="ayuda" style="margin:4px 0 2px">${esc(f.nota)}</div>` : ''}${items}${pie}
+    <button class="copiar chico" onclick="pedirAnular('fiado','${f.key}')">${f.pend ? 'Borrar' : 'Anular'}</button>${f.pend ? '' : ` <button class="copiar chico" onclick="compartirComprobante('fiado',${f.numero})">Comprobante PDF</button>`}</div>`;
+}
+function htmlMovimientos(c) {
+  if (!c.movimientos.length) return '<div class="vacio">Todavía no hay movimientos.</div>';
+  return c.movimientos.slice().reverse().map(m => `<div class="mov"><div class="ic ${m.tipo}">${m.tipo === 'F' ? '−' : '+'}</div>
+    <div class="med"><b>${m.tipo === 'F' ? 'Fiado' : 'Abono'}</b> <small style="display:inline">${esc(m.num)}</small>${chipSubir(m)}<small>${esc(m.fechaTxt)} · ${esc(m.detalle)}</small>
+    ${m.err ? `<small class="rojo">${esc(m.err)}</small>` : ''}
+    ${m.tipo === 'A' ? `<button class="copiar chico" onclick="pedirAnular('abono','${m.key}')">${m.pend ? 'Borrar' : 'Anular'}</button>${m.pend ? '' : ` <button class="copiar chico" onclick="compartirComprobante('abono',${m.numero})">Recibo PDF</button>`}` : ''}</div>
+    <div class="der"><b class="${m.tipo === 'F' ? 'rojo' : 'verde'}">${m.tipo === 'F' ? '+' : '−'}${cop(m.valor)}</b><small>Saldo ${cop(m.saldo)}</small></div></div>`).join('');
+}
+
+/* ---------- Lista de clientes ---------- */
+function pintarClientes() {
+  const lista = V.clientes.map(estado);
+  $('cartera').textContent = cop(lista.reduce((s, c) => s + Math.max(0, c.saldo), 0));
+  const q = normal($('qCli').value), d = q.replace(/\D/g, '');
+  const ok = c => !q || normal(c.nombre).indexOf(q) >= 0 || (d.length >= 3 && (c.cedula.indexOf(d) >= 0 || c.celular.indexOf(d) >= 0));
+  const fila = c => {
+    const uso = c.cupo > 0 ? Math.min(100, Math.max(0, c.saldo) / c.cupo * 100) : (c.saldo > 0 ? 100 : 0), col = colorUso(c.saldo, c.cupo);
+    return `<div class="cli" onclick="abrirCliente('${esc(c.codigo)}')"><div class="izq"><b>${esc(c.nombre)}</b><small>${c.pend ? '⏳ nuevo' : esc(c.codigo)} · CC ${esc(c.cedula)}${c.estado !== 'ACTIVO' ? ' · <span class="rojo">' + esc(c.estado) + '</span>' : ''}${c.tienePend ? ' · <span class="naranja">por subir</span>' : ''}</small></div>
+      <div class="der">${c.saldo > 0 ? `<b style="color:${col}">${cop(c.saldo)}</b><small>de ${cop(c.cupo)}</small><div class="mini"><i style="width:${uso}%;background:${col}"></i></div>` : `<b class="verde">${c.saldo < 0 ? 'A favor ' + cop(-c.saldo) : 'Al día'}</b><small>Cupo ${cop(c.cupo)}</small>`}</div></div>`;
+  };
+  const vis = lista.filter(c => c.estado !== 'RETIRADO' || c.saldo > 0 || q).filter(ok);
+  const deben = vis.filter(c => c.saldo > 0).sort((a, b) => b.saldo - a.saldo), alDia = vis.filter(c => c.saldo <= 0).sort((a, b) => a.nombre.localeCompare(b.nombre));
+  $('tDeben').textContent = 'Deben (' + deben.length + ')'; $('tAlDia').textContent = 'Al día (' + alDia.length + ')';
+  $('lDeben').innerHTML = deben.map(fila).join('') || `<div class="vacio">${q ? 'Sin resultados.' : 'Nadie debe nada.'}</div>`;
+  $('lAlDia').innerHTML = alDia.map(fila).join('') || `<div class="vacio">${V.clientes.length ? 'Sin resultados.' : 'Todavía no hay clientes. Toca "+ Cliente".'}</div>`;
+}
+$('qCli').oninput = pintarClientes;
+
+/* ---------- Ficha ---------- */
+let ficha = null, ultimo = null;
+function abrirCliente(codigo) {
+  const c = V.clientes.find(x => x.codigo === codigo); if (!c) return;
+  ficha = estado(c); err('eFicha', ''); show('oFicha', false); ir('vFicha'); pintarFicha();
+}
+function irFicha() { cerrarModal(); if (ficha) { const c = V.clientes.find(x => x.codigo === ficha.codigo); if (c) { ficha = estado(c); ir('vFicha'); pintarFicha(); return; } } irInicio(); }
+function irInicio() { ir('vMain'); pintarClientes(); }
+function pintarFicha() {
+  const c = ficha, t = (S.snap && S.snap.tienda) || 'Tienda Los Helechos', url = (S.snap && S.snap.url) || '';
+  $('fNombre').textContent = c.nombre;
+  $('fDatos').innerHTML = `${c.pend ? '⏳ cliente nuevo por subir' : esc(c.codigo)} · CC ${esc(c.cedula)} · Cel ${esc(c.celular)}${c.direccion ? '<br>' + esc(c.direccion) : ''}${c.observacion ? '<br><i>' + esc(c.observacion) + '</i>' : ''}${c.err ? '<br><span class="rojo">' + esc(c.err) + '</span>' : ''}`;
+  $('fCuenta').innerHTML = htmlCuenta(c);
+  $('bFiar').disabled = c.estado !== 'ACTIVO';
+  $('fDebe').innerHTML = c.pendientes.length ? c.pendientes.slice().reverse().map(htmlFiado).join('')
+    : `<div class="tarjeta"><div class="vacio">${c.saldo < 0 ? 'No debe nada. Tiene ' + cop(-c.saldo) + ' a favor.' : 'No debe nada. ¡Está al día! ✓'}</div></div>`;
+  $('fMovsL').innerHTML = '<h2>Movimientos</h2>' + htmlMovimientos(c);
+  $('fPagados').innerHTML = c.pagados.length ? '<h2 style="margin-top:6px">Fiados ya pagados</h2>' + c.pagados.map(htmlFiado).join('') : '';
+  const msj = c.saldo > 0 ? `Hola ${c.nombre}, le saluda ${t}. Su saldo de fiado es ${cop(c.saldo)} (cupo ${cop(c.cupo)}). Puede ver el detalle de lo que debe aquí: ${url}`
+    : `Hola ${c.nombre}, le saluda ${t}. Su cuenta de fiado está al día. Puede consultarla aquí: ${url}`;
+  $('aWaCli').href = (c.wa ? 'https:\/\/wa.me/' + c.wa : 'https:\/\/wa.me/') + '?text=' + encodeURIComponent(msj);
+  $('aWaCli').textContent = c.saldo > 0 ? 'Recordar saldo por WhatsApp' : 'Enviar enlace de consulta por WhatsApp';
+}
+
+/* ---------- PDF (necesita internet) ---------- */
+function archivoDe(r, tipo) { return new File([Uint8Array.from(atob(r.datos), c => c.charCodeAt(0))], r.nombre, { type: tipo || 'application/pdf' }); }
+async function compartirArchivo(file, aviso) {
+  if (navigator.canShare && navigator.canShare({ files: [file] })) {
+    try { await navigator.share({ files: [file], title: file.name }); return; } catch (e) { if (e && e.name === 'AbortError') return; }
+  }
+  const a = document.createElement('a'); a.href = URL.createObjectURL(file); a.download = file.name; document.body.appendChild(a); a.click(); a.remove();
+  if (aviso) aviso(`Se descargó el archivo "${file.name}". Lo encuentras en Descargas.`);
+}
+async function pedirPdf(tipo, ref, boton, aviso) {
+  const txt = boton ? boton.textContent : '';
+  if (boton) { boton.disabled = true; boton.textContent = 'Preparando PDF…'; }
+  try {
+    const r = await api({ accion: 'pdf', tipo, ref }, 40000);
+    if (r.error) return alerta(r.error);
+    await compartirArchivo(archivoDe(r), aviso);
+  } catch (e) { alerta('El PDF necesita internet. Los datos siguen guardados; inténtalo cuando haya conexión.'); }
+  finally { if (boton) { boton.disabled = false; boton.textContent = txt; } }
+}
+$('bEstado').onclick = () => {
+  if (ficha.pend) return alerta('Este cliente todavía no se ha subido a Drive. Sincroniza primero.');
+  if (ficha.tienePend) return alerta('Hay registros de este cliente por subir. Sincroniza primero para que el PDF salga completo.');
+  pedirPdf('estado', ficha.codigo, $('bEstado'), m => { $('oFicha').textContent = m; show('oFicha', true); });
+};
+function compartirComprobante(tipo, n) { pedirPdf(tipo, n, null, alerta); }
+
+/* ---------- Anular / borrar ---------- */
+function pedirAnular(tipo, key) {
+  const l = tipo === 'abono' ? V.abonos : V.fiados, x = l.find(i => i.key === key); if (!x) return;
+  const valor = tipo === 'abono' ? x.valor : x.total;
+  if (x.pend) {
+    return modal(`<h3>Borrar ${tipo} por subir</h3><p class="ayuda">Este ${tipo} de ${cop(valor)} todavía no se ha subido a Drive. Se borrará del celular.</p>
+      <button class="principal" style="background:var(--rojo)" onclick="borrarPend('${x.pend}')">Borrar</button><button class="secundario" onclick="cerrarModal()">Cancelar</button>`);
+  }
+  modal(`<h3>Anular ${tipo} ${esc(x.num)}</h3><p class="ayuda">Valor ${cop(valor)}. No se borra: queda marcado como anulado y registrado. El saldo del cliente se recalcula.</p>
+    <label for="mMotivo">Motivo</label><input id="mMotivo" autocomplete="off" placeholder="Ej. se registró dos veces">
+    <button class="principal" style="background:var(--rojo)" id="mAnular">Anular</button><button class="secundario" onclick="cerrarModal()">Cancelar</button><div id="eMod" class="error oculto"></div>`);
+  $('mAnular').onclick = () => {
+    const m = limpio($('mMotivo').value); if (m.length < 3) return err('eMod', 'Escribe el motivo de la anulación.');
+    agregarOp('anular', { tipo, numero: x.numero, motivo: m }); cerrarModal(); irFicha();
+  };
+}
+function borrarPend(id) {
+  const op = S.ops.find(o => o.id === id);
+  if (op && op.tipo === 'cliente') S.ops = S.ops.filter(o => !(o.datos && o.datos.codigo === 'N-' + id));
+  S.ops = S.ops.filter(o => o.id !== id); guardar(); cerrarModal(); refrescar();
+  if (op && op.tipo === 'cliente') irInicio(); else irFicha();
+}
+
+/* ---------- Cliente nuevo / editar ---------- */
+let editando = null;
+[50000, 100000, 200000, 300000, 500000].forEach(v => {
+  const b = document.createElement('button'); b.type = 'button'; b.textContent = cop(v); b.onclick = () => $('cCupo').value = cop(v); $('cupoRap').appendChild(b);
+});
+$('bNuevo').onclick = () => abrirFormCliente(null);
+$('bEditar').onclick = () => abrirFormCliente(ficha);
+$('bVolverCli').onclick = () => editando ? irFicha() : ir('vMain');
+function abrirFormCliente(c) {
+  editando = c; err('eCli', '');
+  $('tCliForm').textContent = c ? 'Editar cliente' : 'Nuevo cliente';
+  $('cNombre').value = c ? c.nombre : ''; $('cCedula').value = c ? c.cedula : ''; $('cCelular').value = c ? c.celular : '';
+  $('cCupo').value = c ? cop(c.cupo) : ''; $('cDir').value = c ? c.direccion : ''; $('cObs').value = c ? c.observacion : '';
+  $('cEstado').value = c ? c.estado : 'ACTIVO'; show('cEstadoBox', !!c);
+  ir('vCliente'); if (!c) $('cNombre').focus();
+}
+$('fCli').onsubmit = e => {
+  e.preventDefault();
+  const d = { nombre: limpio($('cNombre').value), cedula: dig($('cCedula').value), celular: dig($('cCelular').value), cupo: plata($('cCupo').value),
+    direccion: limpio($('cDir').value), observacion: limpio($('cObs').value), estado: $('cEstado').value || 'ACTIVO' };
+  if (d.nombre.length < 3) return err('eCli', 'Escribe el nombre del cliente.');
+  if (d.cedula.length < 5) return err('eCli', 'La cédula debe tener al menos 5 números.');
+  if (d.celular.length !== 10) return err('eCli', 'El celular debe tener 10 dígitos.');
+  if (!$('cCupo').value.trim()) return err('eCli', 'Escribe el cupo máximo de fiado (puede ser $0).');
+  if (V.clientes.some(x => x.cedula === d.cedula && (!editando || x.codigo !== editando.codigo))) return err('eCli', 'Ya existe un cliente con la cédula ' + d.cedula + '.');
+  let codigo;
+  if (editando && editando.pend) {   /* cliente que aún no se sube: se corrige el registro pendiente */
+    const op = S.ops.find(o => o.id === editando.pend); Object.assign(op.datos, d); op.error = ''; guardar(); calcular(); codigo = editando.codigo;
+    setTimeout(() => sincronizar(false), 300);
+  } else if (editando) { agregarOp('cliente', Object.assign({ codigo: editando.codigo }, d)); codigo = editando.codigo; }
+  else { const op = agregarOp('cliente', Object.assign({ codigo: '' }, d)); codigo = 'N-' + op.id; }
+  refrescar(); abrirCliente(codigo);
+};
+
+/* ---------- Fiado ---------- */
+let ITEMS = [];
+$('bFiar').onclick = () => {
+  ITEMS = [{ p: '', c: '1', v: '' }];
+  $('fiaNombre').textContent = ficha.nombre;
+  $('fiaInfo').textContent = 'Debe ' + cop(Math.max(0, ficha.saldo)) + ' · Disponible ' + cop(ficha.disponible) + ' de ' + cop(ficha.cupo);
+  $('fiaFecha').value = hoyISO(); $('fiaFecha').max = hoyISO(); $('fiaNota').value = ''; err('eFiado', '');
+  pintarItems(); ir('vFiado');
+  setTimeout(() => { const i = document.querySelector('#items .pNom'); if (i) i.focus(); }, 100);
+};
+function pintarItems() {
+  $('items').innerHTML = ITEMS.map((it, k) => `<div class="fila-item">
+    <input class="pNom" placeholder="Producto (escribe y elige)" value="${esc(it.p)}" autocomplete="off" data-k="${k}">
+    <div class="sug oculto" id="sug${k}"></div>
+    <div class="dos"><small class="gris">Cantidad</small><small class="gris">Precio c/u</small><input class="pCant" inputmode="decimal" value="${esc(it.c)}" data-k="${k}" aria-label="Cantidad"><input class="pVal plata" inputmode="numeric" placeholder="Precio c/u" value="${it.v ? cop(plata(it.v)) : ''}" data-k="${k}" aria-label="Precio"></div>
+    <div class="sub"><span id="st${k}">Subtotal ${cop(Math.round(cantNum(it.c) * plata(it.v)))}</span>${ITEMS.length > 1 ? `<button type="button" class="quitar" onclick="quitarItem(${k})">Quitar</button>` : ''}</div></div>`).join('');
+  totalFiado();
+}
+function quitarItem(k) { ITEMS.splice(k, 1); pintarItems(); }
+$('bOtro').onclick = () => { ITEMS.push({ p: '', c: '1', v: '' }); pintarItems(); setTimeout(() => { const l = document.querySelectorAll('#items .pNom'); l[l.length - 1].focus(); }, 50); };
+function totalFiado() {
+  const t = ITEMS.reduce((s, i) => s + Math.round(cantNum(i.c) * plata(i.v)), 0);
+  $('fiaTotal').textContent = cop(t);
+  const exceso = Math.max(0, ficha.saldo) + t - ficha.cupo;
+  if (t > 0 && exceso > 0) { $('fiaAviso').textContent = 'Este fiado pasa el cupo por ' + cop(exceso) + '. Al guardar te pediré autorizarlo.'; show('fiaAviso', true); } else show('fiaAviso', false);
+  return t;
+}
+$('items').addEventListener('input', e => {
+  const k = Number(e.target.dataset.k), it = ITEMS[k]; if (!it) return;
+  if (e.target.classList.contains('pNom')) { it.p = e.target.value; sugerir(k); }
+  if (e.target.classList.contains('pCant')) it.c = e.target.value;
+  if (e.target.classList.contains('pVal')) it.v = String(plata(e.target.value));
+  $('st' + k).textContent = 'Subtotal ' + cop(Math.round(cantNum(it.c) * plata(it.v)));
+  totalFiado();
+});
+$('items').addEventListener('focusin', e => { if (e.target.classList.contains('pNom')) sugerir(Number(e.target.dataset.k)); });
+$('items').addEventListener('focusout', e => { if (e.target.classList.contains('pNom')) { const k = e.target.dataset.k; setTimeout(() => { if ($('sug' + k)) show('sug' + k, false); }, 200); } });
+function sugerir(k) {
+  const q = normal(ITEMS[k].p), box = $('sug' + k);
+  if (!q) return show('sug' + k, false);
+  const pal = q.split(' ');
+  const lista = V.productos.filter(p => { const n = normal(p.n); return pal.every(w => n.indexOf(w) >= 0); }).slice(0, 6);
+  if (!lista.length || (lista.length === 1 && normal(lista[0].n) === q && plata(ITEMS[k].v))) return show('sug' + k, false);
+  box.innerHTML = lista.map((p, i) => `<div data-i="${i}"><span>${esc(p.n)}</span><small>${cop(p.p)}</small></div>`).join('');
+  box.querySelectorAll('div').forEach(d => d.onmousedown = d.ontouchstart = ev => {
+    ev.preventDefault();
+    const p = lista[Number(d.dataset.i)];
+    ITEMS[k].p = p.n; ITEMS[k].v = String(p.p); pintarItems();
+    const c = document.querySelector(`#items .pCant[data-k="${k}"]`); if (c) { c.focus(); c.select(); }
+  });
+  show('sug' + k, true);
+}
+$('bGuardarFiado').onclick = () => guardarFiado(false);
+function guardarFiado(autorizado) {
+  err('eFiado', '');
+  const items = ITEMS.filter(i => i.p.trim() || plata(i.v)).map(i => ({ producto: nombreProd(i.p), cantidad: Math.round(cantNum(i.c) * 1000) / 1000, valor: plata(i.v) }));
+  if (!items.length) return err('eFiado', 'Agrega al menos un producto.');
+  for (const i of items) {
+    if (!i.producto) return err('eFiado', 'Falta el nombre de un producto.');
+    if (!(i.cantidad > 0)) return err('eFiado', 'La cantidad de "' + i.producto + '" debe ser mayor que cero.');
+    if (!(i.valor > 0)) return err('eFiado', 'Falta el precio de "' + i.producto + '".');
+  }
+  const total = items.reduce((s, i) => s + Math.round(i.cantidad * i.valor), 0);
+  const exceso = Math.max(0, ficha.saldo) + total - ficha.cupo;
+  if (exceso > 0 && !autorizado) {
+    return modal(`<h3>Pasa el cupo</h3><p>${esc(ficha.nombre)} debe ${cop(Math.max(0, ficha.saldo))} y su cupo es ${cop(ficha.cupo)}.</p>
+      <p>Con este fiado de <b>${cop(total)}</b> quedaría <b class="rojo">${cop(exceso)}</b> por encima del cupo.</p>
+      <button class="principal" style="background:var(--rojo)" onclick="cerrarModal();guardarFiado(true)">Autorizar de todos modos</button>
+      <button class="secundario" onclick="cerrarModal()">No fiar / corregir</button>`);
+  }
+  const fecha = $('fiaFecha').value || hoyISO();
+  if (fecha > hoyISO()) return err('eFiado', 'La fecha no puede ser futura.');
+  const op = agregarOp('fiado', { codigo: ficha.codigo, fecha, items, nota: limpio($('fiaNota').value) });
+  ficha = estado(V.clientes.find(x => x.codigo === ficha.codigo)); ultimo = { tipo: 'fiado', op: op.id };
+  const lista = items.map(i => cant(i.cantidad) + ' ' + i.producto).join(', ');
+  mostrarListo('Fiado guardado', 'Total ' + cop(total) + ' · ' + lista,
+    `Hola ${ficha.nombre}, le saluda ${S.snap.tienda}. Se registró un fiado por ${cop(total)}: ${lista}. Su saldo ahora es ${cop(ficha.saldo)} (cupo ${cop(ficha.cupo)}). Ver detalle: ${S.snap.url}`);
+}
+
+/* ---------- Abono ---------- */
+$('bAbonar').onclick = () => {
+  $('abNombre').textContent = ficha.nombre;
+  $('abInfo').textContent = ficha.saldo > 0 ? 'Debe ' + cop(ficha.saldo) : 'No debe nada (el abono quedará como saldo a favor)';
+  $('abValor').value = ''; $('abNota').value = ''; $('abFecha').value = hoyISO(); $('abFecha').max = hoyISO(); $('abForma').value = 'Efectivo'; err('eAbono', '');
+  $('abRap').innerHTML = '';
+  if (ficha.saldo > 0) {
+    const b = document.createElement('button'); b.type = 'button'; b.textContent = 'Todo: ' + cop(ficha.saldo); b.onclick = () => $('abValor').value = cop(ficha.saldo); $('abRap').appendChild(b);
+    if (ficha.pendientes.length > 1) { const p = ficha.pendientes[0]; const b2 = document.createElement('button'); b2.type = 'button'; b2.textContent = 'Fiado más antiguo: ' + cop(p.falta); b2.onclick = () => $('abValor').value = cop(p.falta); $('abRap').appendChild(b2); }
+  }
+  ir('vAbono'); $('abValor').focus();
+};
+$('bGuardarAbono').onclick = () => {
+  const valor = plata($('abValor').value), fecha = $('abFecha').value || hoyISO();
+  if (!(valor > 0)) return err('eAbono', 'Escribe el valor del abono.');
+  if (fecha > hoyISO()) return err('eAbono', 'La fecha no puede ser futura.');
+  const forma = $('abForma').value;
+  const op = agregarOp('abono', { codigo: ficha.codigo, valor, forma, fecha, nota: limpio($('abNota').value) });
+  ficha = estado(V.clientes.find(x => x.codigo === ficha.codigo)); ultimo = { tipo: 'abono', op: op.id };
+  mostrarListo('Abono guardado', cop(valor) + ' · ' + forma,
+    `Hola ${ficha.nombre}, le saluda ${S.snap.tienda}. Recibimos su abono por ${cop(valor)}. ` +
+    (ficha.saldo > 0 ? `Su saldo pendiente es ${cop(ficha.saldo)}.` : ficha.saldo < 0 ? `Tiene ${cop(-ficha.saldo)} a favor.` : 'Su cuenta quedó al día. ¡Gracias!') + ` Ver detalle: ${S.snap.url}`);
+};
+
+function mostrarListo(t, sub, msj) {
+  $('lTitulo').textContent = t; $('lSub').textContent = sub + (enLinea ? '' : ' · Quedó guardado en el celular y se subirá cuando haya internet.');
+  $('lCuenta').innerHTML = htmlCuenta(ficha); show('nListo', false);
+  $('aWaListo').href = (ficha.wa ? 'https:\/\/wa.me/' + ficha.wa : 'https:\/\/wa.me/') + '?text=' + encodeURIComponent(msj);
+  $('bCompPdf').textContent = ultimo.tipo === 'abono' ? 'Enviar recibo PDF por WhatsApp' : 'Enviar comprobante PDF por WhatsApp';
+  ir('vListo');
+}
+$('bCompPdf').onclick = async () => {
+  const b = $('bCompPdf');
+  if (S.ops.some(o => o.id === ultimo.op)) { b.disabled = true; b.textContent = 'Subiendo…'; await sincronizar(true); b.disabled = false; }
+  const op = S.ops.find(o => o.id === ultimo.op);
+  if (op) { b.textContent = ultimo.tipo === 'abono' ? 'Enviar recibo PDF por WhatsApp' : 'Enviar comprobante PDF por WhatsApp'; return alerta('Todavía no se ha podido subir a Drive (sin internet). Puedes enviar el mensaje de WhatsApp, o el PDF más tarde desde la ficha del cliente.'); }
+  const lista = ultimo.tipo === 'abono' ? V.abonos : V.fiados;
+  const reg = lista.filter(x => x.codigo === ficha.codigo && x.numero).sort((a, b) => b.numero - a.numero)[0];
+  if (reg) pedirPdf(ultimo.tipo, reg.numero, b, m => { $('nListo').textContent = m; show('nListo', true); });
+};
+
+/* ---------- Productos ---------- */
+function pintarProductos() {
+  const q = normal($('qProd').value), pal = q ? q.split(' ') : [];
+  const l = V.productos.filter(p => pal.every(w => normal(p.n).indexOf(w) >= 0));
+  $('tProd').textContent = 'Productos (' + V.productos.length + ')';
+  $('lProd').innerHTML = l.map(p => `<div class="prod" onclick="editarProd(${V.productos.indexOf(p)})"><div>${esc(p.n)}<br><small>Usado ${p.u} ${p.u === 1 ? 'vez' : 'veces'}</small></div><b>${cop(p.p)}</b></div>`).join('')
+    || `<div class="vacio">${V.productos.length ? 'Sin resultados.' : 'Aún no hay productos. Se crean solos al registrar fiados.'}</div>`;
+}
+$('qProd').oninput = pintarProductos;
+$('bNuevoProd').onclick = () => editarProd(-1);
+function editarProd(i) {
+  const p = V.productos[i] || { n: '', p: 0 };
+  modal(`<h3>${i >= 0 ? 'Editar producto' : 'Nuevo producto'}</h3>
+    <label for="mpN">Nombre</label><input id="mpN" value="${esc(p.n)}" autocomplete="off">
+    <label for="mpP">Precio</label><input id="mpP" class="plata" inputmode="numeric" value="${p.p ? cop(p.p) : ''}">
+    <p class="ayuda">Si le pones el nombre de otro producto que ya existe, los dos se unen en uno solo. Cambiar aquí no modifica los fiados ya registrados.</p>
+    <button class="principal" id="mpG">Guardar</button>${i >= 0 ? '<button class="secundario peligro" id="mpB">Quitar de la lista</button>' : ''}
+    <button class="secundario" onclick="cerrarModal()" style="border-color:var(--borde);color:var(--suave)">Cancelar</button><div id="eMp" class="error oculto"></div>`);
+  $('mpG').onclick = () => {
+    const nuevo = nombreProd($('mpN').value); if (!nuevo) return err('eMp', 'Escribe el nombre del producto.');
+    if (i < 0 && V.productos.some(x => normal(x.n) === normal(nuevo))) return err('eMp', 'Ese producto ya existe.');
+    agregarOp('producto', { viejo: p.n, nuevo, precio: plata($('mpP').value) }); cerrarModal(); refrescar();
+  };
+  if (i >= 0) $('mpB').onclick = () => { agregarOp('borrarProducto', { nombre: p.n }); cerrarModal(); refrescar(); };
+}
+
+/* ---------- Más ---------- */
+const NOMBRE_OP = { cliente: 'Cliente', fiado: 'Fiado', abono: 'Abono', anular: 'Anulación', producto: 'Producto', borrarProducto: 'Quitar producto' };
+function pintarSinc() {
+  $('sincInfo').innerHTML = `Última sincronización: <b>${hace(S.ultima)}</b>. ${S.ops.length ? 'Registros guardados en el celular que faltan por subir:' : 'No hay nada pendiente por subir.'}`;
+  $('lPend').innerHTML = S.ops.map(o => {
+    const c = V.clientes.find(x => x.codigo === (o.datos.codigo || 'N-' + o.id));
+    const val = o.tipo === 'fiado' ? o.datos.items.reduce((s, i) => s + Math.round(i.cantidad * i.valor), 0) : o.tipo === 'abono' ? o.datos.valor : null;
+    return `<div class="pendop"><b>${NOMBRE_OP[o.tipo] || o.tipo}</b> ${c ? '· ' + esc(c.nombre) : o.datos.nombre ? '· ' + esc(o.datos.nombre) : o.datos.nuevo ? '· ' + esc(o.datos.nuevo) : ''}${val != null ? ' · ' + cop(val) : ''}
+      <small>${new Date(o.creado).toLocaleString('es-CO')}${o.sinConexion ? ' · hecho sin internet' : ''}</small>${o.error ? `<small class="rojo">⚠ ${esc(o.error)}</small><button class="copiar chico" onclick="descartar('${o.id}')">Descartar</button>` : ''}</div>`;
+  }).join('');
+  err('eSync', ultimoError);
+}
+function descartar(id) {
+  const op = S.ops.find(o => o.id === id); if (!op) return;
+  modal(`<h3>Descartar registro</h3><p class="ayuda">Este registro no se pudo subir: ${esc(op.error)}. Si lo descartas se borra del celular${op.tipo === 'cliente' && !op.datos.codigo ? ', junto con sus fiados y abonos por subir' : ''}.</p>
+    <button class="principal" style="background:var(--rojo)" onclick="borrarPend('${id}');pintarMas()">Descartar</button><button class="secundario" onclick="cerrarModal()">Cancelar</button>`);
+}
+$('bSync').onclick = async () => { const b = $('bSync'); b.disabled = true; b.textContent = 'Sincronizando…'; await sincronizar(true); b.disabled = false; b.textContent = 'Sincronizar ahora'; pintarMas(); };
+
+let mesSel = '', pagoCargado = false;
+function pintarMas() {
+  pintarSinc();
+  const meses = {};
+  const add = (k, campo, v) => { (meses[k] = meses[k] || { mes: k, fiado: 0, abonos: 0, nf: 0, na: 0 })[campo] += v; };
+  V.fiados.forEach(f => { const k = f.fecha.slice(0, 7); add(k, 'fiado', f.total); add(k, 'nf', 1); });
+  V.abonos.forEach(a => { const k = a.fecha.slice(0, 7); add(k, 'abonos', a.valor); add(k, 'na', 1); });
+  const lista = Object.keys(meses).sort().reverse();
+  if (!mesSel || !meses[mesSel]) mesSel = lista[0] || hoyISO().slice(0, 7);
+  $('selMes').innerHTML = (lista.length ? lista : [mesSel]).map(k => `<option value="${k}">${nomMes(k)}</option>`).join('');
+  $('selMes').value = mesSel;
+  const m = meses[mesSel] || { fiado: 0, abonos: 0, nf: 0, na: 0 };
+  const top = {};
+  V.fiados.filter(f => f.fecha.slice(0, 7) === mesSel).forEach(f => f.items.forEach(i => { const k = normal(i.producto); const t = top[k] = top[k] || { producto: i.producto, cantidad: 0, valor: 0 }; t.cantidad += i.cantidad; t.valor += i.subtotal; }));
+  const topL = Object.values(top).sort((a, b) => b.valor - a.valor).slice(0, 15);
+  const deud = V.clientes.map(estado).filter(c => c.saldo > 0).sort((a, b) => b.saldo - a.saldo);
+  let h = `<div class="resumen-mes"><div><small>Fiado en el mes (${m.nf})</small><b class="rojo">${cop(m.fiado)}</b></div><div><small>Abonos en el mes (${m.na})</small><b class="verde">${cop(m.abonos)}</b></div>
+    <div style="grid-column:1/-1"><small>Total por cobrar hoy</small><b>${cop(deud.reduce((s, c) => s + c.saldo, 0))}</b></div></div>`;
+  h += '<h2 style="margin-top:14px">Lo más fiado en el mes</h2>' + (topL.length ? topL.map(t => `<div class="rep"><span>${cant(t.cantidad)} × ${esc(t.producto)}</span><b>${cop(t.valor)}</b></div>`).join('') : '<div class="vacio">Sin fiados este mes.</div>');
+  h += '<h2 style="margin-top:14px">Quién debe</h2>' + (deud.length ? deud.map(d => `<div class="rep"><span>${esc(d.nombre)}</span><b style="color:${colorUso(d.saldo, d.cupo)}">${cop(d.saldo)}</b></div>`).join('') : '<div class="vacio">Nadie debe.</div>');
+  $('rep').innerHTML = h;
+  const r = (S.snap && S.snap.respaldo) || {};
+  $('chkDiario').checked = !!r.diario;
+  $('ultResp').textContent = r.ultimo ? 'Última copia en Drive: ' + r.ultimo : 'Todavía no se ha hecho ninguna copia en Excel.';
+  $('urlApp').textContent = (S.snap && S.snap.url) || '';
+  if (!pagoCargado) cargarPago();
+}
+$('selMes').onchange = () => { mesSel = $('selMes').value; pintarMas(); };
+
+$('bRespaldo').onclick = async () => {
+  const b = $('bRespaldo'); err('eResp', ''); show('oResp', false); b.disabled = true; b.textContent = 'Preparando copia…';
+  try {
+    if (S.ops.length) await sincronizar(true);
+    const r = await api({ accion: 'respaldo' }, 90000);
+    if (r.error) return err('eResp', r.error);
+    if (S.snap) S.snap.respaldo = r.respaldo; guardar();
+    await compartirArchivo(archivoDe(r, 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'), m => { $('oResp').textContent = m + ' También quedó guardada en Drive.'; show('oResp', true); });
+    pintarMas();
+  } catch (e) { err('eResp', 'La copia en Excel necesita internet. Tus datos siguen guardados en el celular.'); }
+  finally { b.disabled = false; b.textContent = 'Descargar copia en Excel'; }
+};
+$('chkDiario').onchange = async () => {
+  const on = $('chkDiario').checked; err('eResp', ''); show('oResp', false);
+  try {
+    const r = await api({ accion: 'respaldoDiario', activar: on });
+    if (r.error) throw new Error(r.error);
+    if (S.snap) S.snap.respaldo = r.respaldo; guardar();
+    $('oResp').textContent = on ? 'Copia automática activada: se guarda en Drive todas las noches.' : 'Copia automática desactivada.'; show('oResp', true);
+  } catch (e) { $('chkDiario').checked = !on; err('eResp', 'Necesita internet: ' + e.message); }
+};
+$('bUrl').onclick = async () => {
+  const url = S.snap && S.snap.url; if (!url) return;
+  const t = 'Consulta tu cuenta de fiados de ' + S.snap.tienda + ' con tu cédula y los últimos 4 dígitos de tu celular: ' + url;
+  if (navigator.share) { try { await navigator.share({ text: t }); return; } catch (e) { if (e && e.name === 'AbortError') return; } }
+  window.open('https:\/\/wa.me/?text=' + encodeURIComponent(t), '_blank');
+};
+
+let QR_NUEVO = '';
+async function cargarPago() {
+  try {
+    const r = await api({ accion: 'datosPago' }, 20000);
+    if (r.error) throw new Error(r.error);
+    pagoCargado = true; pintarPago(r.pago);
+  } catch (e) { show('pagoOff', true); show('pagoForm', false); }
+}
+function pintarPago(p) {
+  show('pagoOff', false); show('pagoForm', true);
+  $('pLlave').value = p.llave; $('pTitular').value = p.titular; $('pBanco').value = p.banco; $('pTipo').value = p.tipo;
+  $('pNumero').value = p.numero; $('pCelular').value = p.celular; $('pNota').value = p.nota;
+  $('qrVista').innerHTML = p.qr ? `<img src="${p.qr}" alt="QR">` : '<div class="ayuda">Sin QR</div>';
+  show('lQuitarQr', !!p.qr); $('quitarQr').checked = false; $('qrFile').value = ''; QR_NUEVO = '';
+}
+$('qrFile').onchange = () => {
+  const f = $('qrFile').files[0]; if (!f) return;
+  const img = new Image(), rd = new FileReader();
+  rd.onload = () => { img.onload = () => {
+    const s = Math.min(1, 900 / Math.max(img.width, img.height)), cv = document.createElement('canvas');
+    cv.width = Math.round(img.width * s); cv.height = Math.round(img.height * s);
+    cv.getContext('2d').drawImage(img, 0, 0, cv.width, cv.height);
+    QR_NUEVO = cv.toDataURL('image/png'); $('qrVista').innerHTML = `<img src="${QR_NUEVO}" alt="QR">`;
+  }; img.src = rd.result; };
+  rd.readAsDataURL(f);
+};
+$('bPago').onclick = async () => {
+  const b = $('bPago'); err('ePago', ''); show('oPago', false); b.disabled = true;
+  try {
+    const d = { llave: $('pLlave').value, titular: $('pTitular').value, banco: $('pBanco').value, tipo: $('pTipo').value, numero: $('pNumero').value,
+      celular: $('pCelular').value, nota: $('pNota').value, qr: QR_NUEVO, quitarQr: $('quitarQr').checked };
+    const r = await api({ accion: 'guardarPago', datos: d }, 40000);
+    if (r.error) return err('ePago', r.error);
+    pintarPago(r.pago); $('oPago').textContent = 'Datos de pago guardados.'; show('oPago', true);
+  } catch (e) { err('ePago', 'Necesita internet. Inténtalo cuando haya conexión.'); }
+  finally { b.disabled = false; }
+};
+
+/* ---------- Al abrir: si ya hay PIN y datos en el celular, entra directo ---------- */
+if (S.pin && S.snap) { entrar(); sincronizar(false); }
+</script>
+</body>
+</html>
