@@ -190,7 +190,7 @@
         <h2>Cambiar PIN de acceso</h2>
         <p class="ayuda" style="margin-top:0">Necesita internet. El PIN nuevo sirve desde ya en este celular y en el panel web; en otro celular hay que salir y entrar con el PIN nuevo.</p>
         <label for="pinAct">PIN actual</label><input id="pinAct" type="password" inputmode="numeric" maxlength="8" autocomplete="off">
-        <label for="pinNue">PIN nuevo (4 a 8 números)</label><input id="pinNue" type="password" inputmode="numeric" maxlength="8" autocomplete="off">
+        <label for="pinNue">PIN nuevo (6 a 8 números, no seguidos ni repetidos)</label><input id="pinNue" type="password" inputmode="numeric" maxlength="8" autocomplete="off">
         <label for="pinNue2">Repite el PIN nuevo</label><input id="pinNue2" type="password" inputmode="numeric" maxlength="8" autocomplete="off">
         <button class="principal" id="bCambiarPin">Cambiar PIN</button>
         <div id="ePinC" class="error oculto"></div><div id="oPinC" class="ok oculto"></div>
@@ -971,7 +971,7 @@ $('bCambiarPin').onclick = async () => {
   err('ePinC', ''); show('oPinC', false);
   const act = dig($('pinAct').value), nue = dig($('pinNue').value), nue2 = dig($('pinNue2').value);
   if (await hash(act) !== S.pinHash) return err('ePinC', 'El PIN actual no es correcto.');
-  if (nue.length < 4 || nue.length > 8) return err('ePinC', 'El PIN nuevo debe tener de 4 a 8 números.');
+  if (nue.length < 6 || nue.length > 8) return err('ePinC', 'El PIN nuevo debe tener de 6 a 8 números.');
   if (nue !== nue2) return err('ePinC', 'Los dos PIN nuevos no coinciden.');
   if (nue === act) return err('ePinC', 'El PIN nuevo es igual al actual.');
   const b = $('bCambiarPin'); b.disabled = true; b.textContent = 'Cambiando…';
