@@ -1,5 +1,5 @@
 /* Guarda la app en el celular para que abra sin internet. Cambia VERSION en cada publicación. */
-const VERSION = 'fh-v1';
+const VERSION = 'fh-v2';
 const ARCHIVOS = ['./', 'index.html', 'manifest.webmanifest', 'icono-192.png', 'icono-512.png', 'icono-180.png'];
 
 self.addEventListener('install', e => {
